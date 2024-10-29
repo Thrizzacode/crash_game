@@ -3,8 +3,8 @@
     <!-- <div ref="animatedBox" class="animated-box rounded-full"></div> -->
     <img
       ref="animatedBox"
-      class="w-150px absolute left-0 bottom-0 -rotate-45"
-      src="@/assets/images/ultramen.png"
+      class="w-150px absolute left-0 bottom-0"
+      src="@/assets/images/rider_kick.png"
     />
     <div class="flex flex-col items-center z-10">
       <div class="text-40px text-red">{{ num.toFixed(2) }}X</div>
@@ -31,9 +31,9 @@
     </button>
     <button
       class="bg-blue rounded-lg border-0 py-10px w-full cursor-pointer"
-      @click="restartAnimation"
+      @click="reset"
     >
-      restart
+      reset
     </button>
     <div>{{ mutipleNum }}</div>
   </div>
@@ -56,7 +56,7 @@ onMounted(() => {
     targets: animatedBox.value,
     translateX: 750, // 移動至右側（800px - 50px）
     translateY: -750, // 向上移動至頂部（-800px + 50px）
-    rotate: -45,
+    rotate: { value: [-45, -45] },
     duration: 50000,
     easing: "easeOutCirc",
     autoplay: false,
@@ -93,6 +93,9 @@ const reset = () => {
   num.value = 1.0;
   animation.value.restart();
   animation.value.pause();
+  num.value = 1.0;
+  clearInterval(intervalId.value);
+  intervalId.value = null;
 };
 
 const cashout = () => {
