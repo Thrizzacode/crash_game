@@ -1,30 +1,44 @@
 <template>
-  <div class="container center">
-    <!-- <div ref="animatedBox" class="animated-box rounded-full"></div> -->
-    <img
-      ref="animatedBox"
-      class="w-150px absolute left-0 bottom-0"
-      src="@/assets/images/rider_kick.png"
-    />
-    <div class="flex flex-col items-center z-10">
-      <div class="text-40px text-red">{{ num.toFixed(2) }}X</div>
-      <div class="text-40px text-green">
-        Win Amount: {{ (betAmount * num).toFixed(2) }}
+  <div>
+    <div class="flex gap-10px">
+      <template v-for="(item, index) in betResult" :key="index">
+        <div class="border-1 border-solid p-5px rounded-md my-5px">
+          {{ item.toFixed(2) }}
+        </div>
+      </template>
+    </div>
+    <div class="container center">
+      <img
+        ref="animatedBox"
+        class="w-150px absolute left-0 bottom-0"
+        src="@/assets/images/rider_kick.png"
+      />
+      <div class="flex flex-col items-center z-10">
+        <div class="text-40px text-red">{{ num.toFixed(2) }}X</div>
+        <div class="text-40px text-green">
+          Win Amount: {{ (betAmount * num).toFixed(2) }}
+        </div>
       </div>
     </div>
   </div>
   <div class="flex flex-col gap-10px ml-20px w-150px">
+    <div>Balance:</div>
+    <div>{{ balance.toFixed(2) }}</div>
     <label for="betAmout">BetAmout:</label>
     <input v-model="betAmount" type="number" name="betAmount" id="betAmout" />
 
     <button
       class="bg-blue rounded-lg border-0 py-10px w-full cursor-pointer"
+      :class="{ 'bg-gray cursor-not-allowed': gameStart }"
+      :disabled="gameStart"
       @click="playAnimation"
     >
       Play
     </button>
     <button
       class="bg-blue rounded-lg border-0 py-10px w-full cursor-pointer"
+      :class="{ 'bg-gray cursor-not-allowed': !gameStart || cashouted }"
+      :disabled="!gameStart || cashouted"
       @click="cashout"
     >
       CashOut
@@ -33,7 +47,7 @@
       class="bg-blue rounded-lg border-0 py-10px w-full cursor-pointer"
       @click="reset"
     >
-      reset
+      Reset
     </button>
     <div>{{ mutipleNum }}</div>
   </div>
@@ -50,6 +64,12 @@ const mutipleNum = ref(0);
 const num = ref(1.0);
 const intervalId = ref(null);
 const betAmount = ref(10);
+const balance = ref(10000);
+
+const gameStart = ref(false);
+const cashouted = ref(false);
+
+const betResult = ref([]);
 
 onMounted(() => {
   animation.value = anime({
@@ -64,6 +84,9 @@ onMounted(() => {
 });
 
 const playAnimation = () => {
+  balance.value -= betAmount.value;
+  gameStart.value = true;
+  cashouted.value = false;
   animation.value.play();
   mutipleNumGenerator();
   startIncrement();
@@ -90,6 +113,7 @@ const startIncrement = () => {
 };
 
 const reset = () => {
+  gameStart.value = false;
   num.value = 1.0;
   animation.value.restart();
   animation.value.pause();
@@ -99,6 +123,8 @@ const reset = () => {
 };
 
 const cashout = () => {
+  cashouted.value = true;
+  balance.value += betAmount.value * mutipleNum.value;
   Swal.fire({
     title: "You Won!!!",
     text: betAmount.value * mutipleNum.value,
@@ -111,9 +137,9 @@ watch(
     if (newVal >= mutipleNum.value) {
       clearInterval(intervalId.value);
       intervalId.value = null;
+      betResult.value.push(mutipleNum.value);
       Swal.fire({
-        title: "BomB!!!",
-        text: "You are loser :(",
+        title: "Henshin!!!",
         icon: "warning",
       });
       reset();
