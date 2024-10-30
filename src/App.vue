@@ -188,11 +188,11 @@ watch(
       crashed.value = true;
       cashouted.value = true;
       animation.value.pause();
+      curveAnimation.value.pause();
       Swal.fire({
         title: 'Crashed!!!',
         icon: 'warning',
       });
-      // reset();
     }
   }
 );
