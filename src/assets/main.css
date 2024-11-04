@@ -37,3 +37,20 @@ a,
     padding: 0 2rem;
   }
 } */
+ input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* 適用於 Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+input[type=number]:focus {
+    outline: none; /* 去除外框 */
+    box-shadow: none; /* 去除陰影 */
+    border-color: initial; /* 邊框顏色回復到初始狀態 */
+}
+
