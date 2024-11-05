@@ -60,8 +60,11 @@
 
   <div>
     <div class="flex gap-10px h-46px">
-      <template v-for="(item, index) in betResult" :key="index">
-        <div class="border-1 border-solid p-5px rounded-md my-5px text-white">
+      <template v-for="(item, index) in betResult.slice(-15)" :key="index">
+        <div
+          class="border-1 border-solid p-5px rounded-md my-5px text-white hover:bg-amber hover:cursor-pointer"
+          @click="openResultDetail()"
+        >
           {{ item.toFixed(2) }}
         </div>
       </template>
@@ -108,6 +111,39 @@
       </div>
     </div>
   </div>
+
+  <!-- dialog -->
+  <dialog
+    class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 p-0 border-0 rounded-lg bg-transparent"
+  >
+    <div class="flex flex-col p-40px gap-10px bg-#200745">
+      <div class="text-24px text-white">Result Detail</div>
+      <div class="flex flex-col gap-10px">
+        <div class="text-18px text-white">Hash</div>
+        <input
+          readonly
+          type="text"
+          class="w-400px"
+          value="4f2cf68084f9d85b9ac495aee6197d34a1bacd1414bd28b1215d9d112f8566d2"
+        />
+      </div>
+      <div class="flex flex-col gap-10px">
+        <div class="text-18px text-white">Seed</div>
+        <input
+          readonly
+          type="text"
+          class="w-400px"
+          value="0000000000000000001b34dc6a1e86083f95500b096231436e9b25cbdd0075c4"
+        />
+      </div>
+      <button
+        class="btn rounded-lg border-0 py-10px w-full cursor-pointer"
+        @click="closeResultDetail"
+      >
+        Close
+      </button>
+    </div>
+  </dialog>
 </template>
 
 <script setup>
@@ -127,7 +163,7 @@ const isBet = ref(false);
 const cashouted = ref(false);
 const isCrashed = ref(false);
 
-const betResult = ref([]);
+const betResult = ref([3.99, 2.99, 1.99, 1.49, 1.99, 2.99]);
 
 // WebSocket
 // onMounted(() => {
@@ -187,6 +223,14 @@ const betResult = ref([]);
 //   console.log('Disconnected from server');
 // };
 // })
+
+const openResultDetail = () => {
+  document.querySelector('dialog').showModal();
+};
+
+const closeResultDetail = () => {
+  document.querySelector('dialog').close();
+};
 
 // 开始倒计时
 const isCountingDown = ref(false);
